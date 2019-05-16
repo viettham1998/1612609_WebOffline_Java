@@ -13,6 +13,7 @@ public class XuLi {
     String chuoi;
     String tenFile = "index.html";
     String tenThuMuc = "1612609";
+    ArrayList<String> arr = new ArrayList<String>();
 
     public XuLi() {
         chuoi = "";
@@ -61,31 +62,59 @@ public class XuLi {
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
+            chuanHoaDuongDan(chuoi);
+            JOptionPane.showMessageDialog(null,chuoi);
+            JOptionPane.showMessageDialog(null, chuanHoaDuongDan(chuoi));
             JOptionPane.showMessageDialog(null, "Kết nối thành công. Quá trình download sẽ được thực hiện");
         } else {
             JOptionPane.showMessageDialog(null, "Kết nối thất bại, vui lòng kiểm tra lại đường dẫn web");
         }
     }
 
+    public void Load(String a, String name) {
+        try {
+            URL website = new URL(a);
+            ReadableByteChannel rbc = Channels.newChannel(website.openStream());
+            FileOutputStream fos = new FileOutputStream(name);
+            fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+            fos.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
     public void docTatCaDuongDan(String duongDan) throws IOException {
-        ArrayList<String> arr = new ArrayList<String>();
         URL pagelocation = new URL(duongDan);
         Scanner in = new Scanner(pagelocation.openStream());
         while (in.hasNext()) {
             String line = in.next();
-            if (line.contains("href=\"https://") || line.contains("href=\"http://")) {
+            if (line.contains("href=\"")) {
                 int from = line.indexOf("\"");
                 int to = line.lastIndexOf("\"");
-                arr.add(line.substring(from+1, to));
+                arr.add(line.substring(from + 1, to));
             }
         }
-        FileOutputStream dsLink = new FileOutputStream(tenThuMuc + "\\"+"dsLink.txt");
-        for(String chay : arr)
-        {
+        FileOutputStream dsLink = new FileOutputStream(tenThuMuc + "\\" + "dsLink.txt");
+        for (String chay : arr) {
             dsLink.write(chay.getBytes());
             dsLink.write(' ');
-            dsLink.write('\n');
         }
         dsLink.close();
+    }
+
+    public String chuanHoaDuongDan(String duongDan) {
+        int dem = 0;
+        for (int i = 0; i < duongDan.length(); i++) {
+            if (duongDan.charAt(i) == '/') {
+                dem++;
+                if (dem == 3) {
+                   duongDan = duongDan.substring(0,i+1);
+                    break;
+                }
+            }
+        }
+        if(dem==2)
+            duongDan=duongDan+'/';
+        return duongDan;
     }
 }
