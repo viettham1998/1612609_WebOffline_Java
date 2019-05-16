@@ -62,9 +62,12 @@ public class XuLi {
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-            chuanHoaDuongDan(chuoi);
-            JOptionPane.showMessageDialog(null,chuoi);
-            JOptionPane.showMessageDialog(null, chuanHoaDuongDan(chuoi));
+            //chuanHoaDuongDan(chuoi);
+            //JOptionPane.showMessageDialog(null,chuoi);
+            //JOptionPane.showMessageDialog(null, chuanHoaDuongDan(chuoi));
+            //duongDanChuan("huynhviet/tham");
+           // JOptionPane.showMessageDialog(null, duongDanChuan("huynhviet/tham"));
+            JOptionPane.showMessageDialog(null, duongDanChuan("https://portal1.hcmus.edu.vn"));
             JOptionPane.showMessageDialog(null, "Kết nối thành công. Quá trình download sẽ được thực hiện");
         } else {
             JOptionPane.showMessageDialog(null, "Kết nối thất bại, vui lòng kiểm tra lại đường dẫn web");
@@ -92,6 +95,8 @@ public class XuLi {
                 int from = line.indexOf("\"");
                 int to = line.lastIndexOf("\"");
                 arr.add(line.substring(from + 1, to));
+              //  String M = chuanHoaDuongDan(line.substring(from + 1, to));
+               // JOptionPane.showMessageDialog(null, M);
             }
         }
         FileOutputStream dsLink = new FileOutputStream(tenThuMuc + "\\" + "dsLink.txt");
@@ -115,6 +120,13 @@ public class XuLi {
         }
         if(dem==2)
             duongDan=duongDan+'/';
+        return duongDan;
+    }
+    public String duongDanChuan(String duongDan){
+        String k = duongDan.substring(0,4);
+        if(k.compareTo("http")!=0){
+            duongDan=chuanHoaDuongDan(chuoi)+duongDan;
+        }
         return duongDan;
     }
 }
