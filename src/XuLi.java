@@ -73,7 +73,7 @@ public class XuLi {
         Scanner in = new Scanner(pagelocation.openStream());
         while (in.hasNext()) {
             String line = in.next();
-            if (line.contains("href=\"http://")) {
+            if (line.contains("href=\"https://") || line.contains("href=\"http://")) {
                 int from = line.indexOf("\"");
                 int to = line.lastIndexOf("\"");
                 arr.add(line.substring(from+1, to));

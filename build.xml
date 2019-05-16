@@ -1,0 +1,6 @@
+<project name="1612609_DuyetWebOffline">
+    <target name="compile">
+        <mkdir dỉ="build/classes"/>
+        <javac srcdir="src" destdir="build/classes"></javac>
+    </target>
+</project>
