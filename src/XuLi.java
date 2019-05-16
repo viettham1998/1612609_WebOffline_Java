@@ -118,7 +118,7 @@ public class XuLi {
             duongDan = duongDan + '/';
         return duongDan;
     }
-    
+
     public String duongDanChuan(String duongDan) {
         String k = duongDan.substring(0, 4);
         if (k.compareTo("http") != 0) {
