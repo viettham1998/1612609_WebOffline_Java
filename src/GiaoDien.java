@@ -2,28 +2,21 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
 
 public class GiaoDien {
     public static final int WIDTH = 400;
-    public static final int HEIGHT = 150;
+    public static final int HEIGHT = 200;
     private JButton tảiButton;
     private JTextField linkTextTextField;
     private JPanel mainForm;
-    private JTextField textField1;
+    private JTextField tenThuMuc;
     private JTextField fileName;
 
     public GiaoDien() {
         tảiButton.addActionListener((new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                XuLi xL = new XuLi(linkTextTextField.getText(),fileName.getText());
+                XuLi xL = new XuLi(linkTextTextField.getText(),fileName.getText(), tenThuMuc.getText());
                 xL.batDau();
             }
         }));

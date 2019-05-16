@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -9,14 +10,19 @@ import java.nio.channels.ReadableByteChannel;
 public class XuLi {
     String chuoi;
     String tenFile="index.html";
+    String tenThuMuc="1612609";
     public XuLi(){
         chuoi="";
         tenFile="";
+        tenThuMuc="";
     }
-    public XuLi(String URL, String name){
+    public XuLi(String URL, String name, String thuMuc){
         chuoi=URL;
         if(name!="") {
             tenFile = name;
+        }
+        if(thuMuc!=""){
+            tenThuMuc=thuMuc;
         }
       //  else tenFile="index.html";
     }
@@ -38,10 +44,11 @@ public class XuLi {
     }
     public void batDau(){
         if (kiemTraKetNoi() == true) {
+            new File(tenThuMuc).mkdir();
             try{
                 URL website = new URL(chuoi);
                 ReadableByteChannel rbc = Channels.newChannel(website.openStream());
-                FileOutputStream fos = new FileOutputStream(tenFile);
+                FileOutputStream fos = new FileOutputStream(tenThuMuc+ "\\"+ tenFile);
                 fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
                 fos.close();
             } catch (IOException ex) {
