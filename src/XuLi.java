@@ -62,12 +62,6 @@ public class XuLi {
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-            //chuanHoaDuongDan(chuoi);
-            //JOptionPane.showMessageDialog(null,chuoi);
-            //JOptionPane.showMessageDialog(null, chuanHoaDuongDan(chuoi));
-            //duongDanChuan("huynhviet/tham");
-           // JOptionPane.showMessageDialog(null, duongDanChuan("huynhviet/tham"));
-            JOptionPane.showMessageDialog(null, duongDanChuan("https://portal1.hcmus.edu.vn"));
             JOptionPane.showMessageDialog(null, "Kết nối thành công. Quá trình download sẽ được thực hiện");
         } else {
             JOptionPane.showMessageDialog(null, "Kết nối thất bại, vui lòng kiểm tra lại đường dẫn web");
@@ -78,7 +72,7 @@ public class XuLi {
         try {
             URL website = new URL(a);
             ReadableByteChannel rbc = Channels.newChannel(website.openStream());
-            FileOutputStream fos = new FileOutputStream(name);
+            FileOutputStream fos = new FileOutputStream(tenThuMuc + "\\" + name);
             fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
             fos.close();
         } catch (IOException ex) {
@@ -89,14 +83,16 @@ public class XuLi {
     public void docTatCaDuongDan(String duongDan) throws IOException {
         URL pagelocation = new URL(duongDan);
         Scanner in = new Scanner(pagelocation.openStream());
+        int i = 0;
         while (in.hasNext()) {
             String line = in.next();
             if (line.contains("href=\"")) {
                 int from = line.indexOf("\"");
                 int to = line.lastIndexOf("\"");
                 arr.add(line.substring(from + 1, to));
-              //  String M = chuanHoaDuongDan(line.substring(from + 1, to));
-               // JOptionPane.showMessageDialog(null, M);
+                String M = duongDanChuan(line.substring(from + 1, to));
+                Load(M, "ouput" + i + ".html");
+                i++;
             }
         }
         FileOutputStream dsLink = new FileOutputStream(tenThuMuc + "\\" + "dsLink.txt");
@@ -113,19 +109,20 @@ public class XuLi {
             if (duongDan.charAt(i) == '/') {
                 dem++;
                 if (dem == 3) {
-                   duongDan = duongDan.substring(0,i+1);
+                    duongDan = duongDan.substring(0, i + 1);
                     break;
                 }
             }
         }
-        if(dem==2)
-            duongDan=duongDan+'/';
+        if (dem == 2)
+            duongDan = duongDan + '/';
         return duongDan;
     }
-    public String duongDanChuan(String duongDan){
-        String k = duongDan.substring(0,4);
-        if(k.compareTo("http")!=0){
-            duongDan=chuanHoaDuongDan(chuoi)+duongDan;
+    
+    public String duongDanChuan(String duongDan) {
+        String k = duongDan.substring(0, 4);
+        if (k.compareTo("http") != 0) {
+            duongDan = chuanHoaDuongDan(chuoi) + duongDan;
         }
         return duongDan;
     }
