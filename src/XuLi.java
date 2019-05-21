@@ -13,6 +13,7 @@ public class XuLi {
     String chuoi;
     String tenFile = "index.html";
     String tenThuMuc = "1612609";
+    String taoThuMuc="";
     ArrayList<String> arr = new ArrayList<String>();
 
     public XuLi() {
@@ -72,9 +73,13 @@ public class XuLi {
         try {
             URL website = new URL(a);
             ReadableByteChannel rbc = Channels.newChannel(website.openStream());
-            FileOutputStream fos = new FileOutputStream(tenThuMuc + "\\" + name);
+            //đọc a, tính//
+            //Nếu còn // thì tạo thư mục tên là .... new File(tenthumuc).mkdir()
+            //tiếp tục đọc, nếu hết // thì tạo file.
+            FileOutputStream fos = new FileOutputStream(tenThuMuc + "\\"+ taoThuMuc + "\\" + name);
             fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
             fos.close();
+            JOptionPane.showMessageDialog(null, "tao thanh cong");
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -83,7 +88,8 @@ public class XuLi {
     public void docTatCaDuongDan(String duongDan) throws IOException {
         URL pagelocation = new URL(duongDan);
         Scanner in = new Scanner(pagelocation.openStream());
-        int i = 0;
+        int i = 0, t = 0;
+        String tenFileLuu;
         while (in.hasNext()) {
             String line = in.next();
             if (line.contains("href=\"")) {
@@ -91,8 +97,25 @@ public class XuLi {
                 int to = line.lastIndexOf("\"");
                 arr.add(line.substring(from + 1, to));
                 String M = duongDanChuan(line.substring(from + 1, to));
-                Load(M, "ouput" + i + ".html");
-                i++;
+                //JOptionPane.showMessageDialog(null, M);
+                String N = M;
+                if(M.endsWith("css")==true || M.endsWith("ico")==true){
+                    t = M.lastIndexOf("/");
+                    tenFileLuu = N.substring(t + 1);
+                    JOptionPane.showMessageDialog(null, tenFileLuu);
+                    int k = M.indexOf("/",9);
+                    taoThuMuc = N.substring(k + 1, t);
+                    new File(tenThuMuc + "\\" + taoThuMuc).mkdirs();
+                }
+                else
+                {
+                    tenFileLuu = "output" + i + ".html";
+                    i++;
+                }
+                //đọc từ cuối, xác định lưu css hay html
+                //lấy tên
+                Load(M, tenFileLuu);
+                taoThuMuc="";
             }
         }
         FileOutputStream dsLink = new FileOutputStream(tenThuMuc + "\\" + "dsLink.txt");
@@ -126,4 +149,5 @@ public class XuLi {
         }
         return duongDan;
     }
+
 }
