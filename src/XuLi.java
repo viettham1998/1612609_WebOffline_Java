@@ -18,6 +18,7 @@ public class XuLi {
     String taoThuMuc = "";
     ArrayList<String> arr = new ArrayList<String>();
     ArrayList<String> dsLink = new ArrayList<>();
+    int i=0;
 
     public XuLi() {
         chuoi = "";
@@ -31,7 +32,8 @@ public class XuLi {
             tenFile = name;
         }
         if (thuMuc != "") {
-            tenThuMuc = thuMuc;
+//            tenThuMuc = "D:\\"+thuMuc;
+            tenThuMuc=thuMuc;
         }
         //  else tenFile="index.html";
     }
@@ -73,52 +75,76 @@ public class XuLi {
         }
     }
 
-    public void Load(String a, String name) {
-        try {
-            URL website = new URL(a);
-            ReadableByteChannel rbc = Channels.newChannel(website.openStream());
-            FileOutputStream fos = new FileOutputStream(tenThuMuc + "\\" + taoThuMuc + "\\" + name);
-            fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-            fos.close();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    }
+//    public void Load(String a, String name) {
+//        try {
+//            URL website = new URL(a);
+//            ReadableByteChannel rbc = Channels.newChannel(website.openStream());
+//            FileOutputStream fos = new FileOutputStream(tenThuMuc + "\\" + taoThuMuc + "\\" + name);
+//            fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+//            fos.close();
+//        } catch (IOException ex) {
+//            ex.printStackTrace();
+//        }
+//    }
 
     public void docTatCaDuongDan(String duongDan) throws IOException {
         URL pagelocation = new URL(duongDan);
         Scanner in = new Scanner(pagelocation.openStream());
-        int i = 0, t = 0;
-        String tenFileLuu;
+        int t = 0;
+        String tenFileLuu="";
         while (in.hasNext()) {
             String line = in.next();
+           // JOptionPane.showMessageDialog(null,line);
             if (line.contains("href=\"")) {
                 int from = line.indexOf("\"");
                 int to = line.lastIndexOf("\"");
-                arr.add(line.substring(from + 1, to));
-                String M = duongDanChuan(line.substring(from + 1, to));
-                if (kiemTraLinkNgoai(duongDan, M) == false) {
-                    if(laLinkTrung(M,dsLink)==false) {
-                        t = M.lastIndexOf("/");
-                        if (M.endsWith("/") == false) {
-                            tenFileLuu = M.substring(t + 1);
-                            if (tenFileLuu.contains(".") == false) {
-                                tenFileLuu = tenFileLuu + ".html";
-                            }
-                            int k = M.indexOf("/", 9);
-                            if (k != t) {
-                                taoThuMuc = M.substring(k + 1, t);
-                            }
-                            new File(tenThuMuc + "\\" + taoThuMuc).mkdirs();
+                if (from != to) {
+                    arr.add(line.substring(from + 1, to));
+                    String M = duongDanChuan(line.substring(from + 1, to));
+                    if (kiemTraLinkNgoai(duongDan, M) == false) {
+                        if (laLinkTrung(M, dsLink) == false) {
+                            dsLink.add(M);
+                            t = M.lastIndexOf("/");
+                            if (M.endsWith("/") == false) {
+                                tenFileLuu = M.substring(t + 1);
+                                if (tenFileLuu.contains(".") == false) {
+                                    tenFileLuu = tenFileLuu + ".html";
+                                }
+                                int k = M.indexOf("/", 9);
+                                if (k != t) {
+                                    taoThuMuc = M.substring(k + 1, t);
+                                }
+                                new File(tenThuMuc + "\\" + taoThuMuc).mkdirs();
 
-                        } else {
-                            tenFileLuu = "home" + i + ".html";
-                            i++;
+                            } else {
+                                tenFileLuu = "home" + i + ".html";
+                                i++;
+                            }
+                            try {
+                                URL website = new URL(M);
+                                ReadableByteChannel rbc = Channels.newChannel(website.openStream());
+                                FileOutputStream fos = new FileOutputStream(tenThuMuc + "\\" + taoThuMuc + "\\" + tenFileLuu);
+                                fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+                                //JOptionPane.showMessageDialog(null, M);
+                                Runnable runnable = () -> {
+//                                    System.out.println("Inside : " + Thread.currentThread().getName());
+                                    try {
+                                        docTatCaDuongDan(M);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                };
+                                Thread thread = new Thread(runnable);
+                                thread.start();
+
+                                fos.close();
+                            } catch (IOException ex) {
+                                ex.printStackTrace();
+                            }
+                            //docTatCaDuongDan(M);
+                            taoThuMuc = "";
                         }
-                        Load(M, tenFileLuu);
-                        taoThuMuc = "";
                     }
-                    dsLink.add(M);
                 }
             }
         }
@@ -129,6 +155,85 @@ public class XuLi {
         }
         dsLink.close();
     }
+
+
+
+//    public void layTatCaLink(String duongDan) throws IOException {
+//        URL pagelocation = new URL(duongDan);
+//        Scanner in = new Scanner(pagelocation.openStream());
+//        while (in.hasNext()) {
+//            String line = in.next();
+//            // JOptionPane.showMessageDialog(null,line);
+//            if (line.contains("href=\"")) {
+//                int from = line.indexOf("\"");
+//                int to = line.lastIndexOf("\"");
+//                if (from != to) {
+//                    String M = line.substring(from + 1, to);
+//                    arr.add(M);
+//                }
+//            }
+//        }
+//    }
+
+//    public String taoThuMuc(String link){
+//        int t = link.lastIndexOf("/");
+//        int i=0;
+//        String tenFileLuu;
+//        if (link.endsWith("/") == false) {
+//            tenFileLuu = link.substring(t + 1);
+//            if (tenFileLuu.contains(".") == false) {
+//                tenFileLuu = tenFileLuu + ".html";
+//            }
+//            int k = link.indexOf("/", 9);
+//            if (k != t) {
+//                taoThuMuc = link.substring(k + 1, t);
+//            }
+//            new File(tenThuMuc + "\\" + taoThuMuc).mkdirs();
+//
+//        } else {
+//            tenFileLuu = "home" + i + ".html";
+//            i++;
+//        }
+//        return (tenThuMuc + "\\" + taoThuMuc + tenFileLuu);
+//    }
+
+
+
+//    public void taiTungTrang(String duongDan) throws IOException {
+//        URL pagelocation = new URL(duongDan);
+//        Scanner in = new Scanner(pagelocation.openStream());
+//        int i = 0, t = 0;
+//        String tenFileLuu = taoThuMuc(duongDan);
+//        FileOutputStream fos = new FileOutputStream(tenFileLuu);
+//        while (in.hasNext()) {
+//            String line = in.nextLine();
+//            String tmp = layLinkChuan(duongDan);
+//           // JOptionPane.showMessageDialog(null,line);
+//            line = line.replaceAll("href=\"http://www." + tmp+"\"","href=\"");
+//            fos.write(line.getBytes());
+//        }
+//        fos.close();
+//    }
+
+    public String layLinkChuan(String duongDan){
+       String tmp = duongDan;
+        if (tmp.startsWith("https://") == true) {
+            tmp = tmp.substring(8);
+            if (tmp.startsWith("www.") == true) {
+                tmp = tmp.substring(4);
+            }
+        } else if (tmp.startsWith("http://") == true) {
+            tmp = tmp.substring(7);
+            if (tmp.startsWith("www") == true) {
+                tmp = tmp.substring(4);
+            }
+        }
+        return tmp;
+    }
+
+
+
+
 
     public String chuanHoaDuongDan(String duongDan) {
         int dem = 0;
@@ -143,7 +248,6 @@ public class XuLi {
         }
         if (dem == 2)
             duongDan = duongDan + '/';
-        // JOptionPane.showMessageDialog(null, duongDan);
         return duongDan;
     }
 
@@ -158,7 +262,6 @@ public class XuLi {
     public Boolean laLinkTrung(String link, ArrayList<String> dsLink) {
         for (String chay : dsLink) {
             if (link.equals(chay)) {
-                dsLink.remove(link);
                 return true;
             }
         }
@@ -184,11 +287,14 @@ public class XuLi {
 
     public boolean kiemTraLinkNgoai(String duongDanBanDau, String duongDan) {
         String tmp = duongDan;
-        if(tmp.substring(tmp.lastIndexOf("/")).contains(".")==true)
-            //JOptionPane.showMessageDialog(null,"Kiem tra: " + tmp);
-            return false;
-        if (catDuongDan(duongDanBanDau).equals(catDuongDan(duongDan)) == true)
+        if (catDuongDan(duongDanBanDau).equals(catDuongDan(duongDan)) == true||tmp.substring(tmp.lastIndexOf("/")).contains(".") == true)
             return false;
         return true;
     }
+
+//    public String replaceDuongDan(String duongDan){
+//        String tmp = duongDan;
+//
+//        return tmp;
+//    }
 }
